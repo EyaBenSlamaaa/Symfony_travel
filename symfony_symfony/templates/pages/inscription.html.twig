@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            background: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsJCQcJCQcJCQkJCwkJCQkJCQsJCwsMCwsLDA0QDBEODQ4MEhkSJRodJR0ZHxwpKRYlNzU2GioyPi0pMBk7IRP/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCADqAVQDASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAIBAwQH/8QAHRABAQEBAQEBAQEBAAAAAAAAABESASFhUTGBsf/EABgBAQEBAQEAAAAAAAAAAAAAAAABAwIE/8QAFxEBAQEBAAAAAAAAAAAAAAAAABESAf/aAAwDAQACEQMRAD8A+s3pesEVt6XrAG3pesAbel6loNvS9SAq9L1gDb0vUgKvS9YA29L1gDb0vWANvS9YA29L1gDb0vWANvS9YA29L1LQL1t6loNvWXowFXpesAbel6wBt6XrAG3pesAbejAAAAAAAGDQGDQBjQGDQGDQAABjQAAAAAAGDQGDQGNY0GDWADQGDQAABjQGDQGDB05aMaAMAaMAaMAaMAaMBWjBINGBCtGBCtGBCtGBCtGNIUAIUAIUAIUAIUAIUawIVowQrRgFaMAqG1FK0jmrpU0qQqr0vUVpCqvRIQrRIsKsqSkSqvSoraQrRlKQqhlZSLVDKypEqhNbRa0ZWVCqL1NKFVzrailVKulRShV0qL1oVV4VLBaqtvP1IKq8/S8/UhBV5+lSJBVLz9TQgq/RNCDmJvC8aRlVH+pvCkKptRSrCqpUXjakKulRSkWrpUX+tvCFVeFRS8IVdKm8LwhVUqbwvCFVSpvC8IVVKm8LwhVF4ml4RKvw8RSkWr8PEVpCt8beIpUhV3hfqK2kKq/SopSLV3hfqKUiVd+l+opSFXfpfqaUhVX6XiaVYVd4IoQrjSopWkY1dbXOlIVdKilIVdKilIVdKmlIVVbUUpFq6VFKQq6VFKQrpWVFKQrpWVFKQq62/wBc6VIV0pXOtpCrpUUqwq6VFKkKulc62kKulc62kWunOlRWUhXSlc6UhXSlc6UhXWsrnTnSFdKVFKQq6IoQrhSopWuWFXSopTJV1unOlMldKVz0aMldKVz02/SLpdKilSGl0qKVYaXSopUhp050qNM0sNOlKilIaXSopTJV0qKVIVdKilIul0qKUhpdKilIaXSopSGl1tc9NqQ0ulRSkNLpUUpDS6VFKsWrpUU0Qq6JoQrz64yudL9bx5q66NOV6XpCuuiud78KRa6UvHPXSkK6U0566a6kK66NOWumuk4V00ac9dNdSFddGnKtpCulK56+mvpCutNOWu/prv6Ra66NOWvpr6RNOujTlTX0yaddM056+tv0yadKVz19NfTJp0pXPRohp0pXPX019/4kNOlNOevpr6sNOujTlr63XCLp00XjleNpFrpSudNdSGnSlc9dNENdddDlrgQ0816actN03jy6dazTlrraQ06VtcqXhF063ppyvDRDTro05X6UyaddF+udKZNOmu/pXKt0ZNOuiuVNJDTrSuWikNOtK51miGnXTdf1x03X9IaddGnKlIunXRpy0Uhp10actFIaddGnKmiGnbRpx11t6ZNOtK5c70qQ060rlSkNOtNOVNENOujTnrpSLp00VyrdcIunSjnoIaeal65973w09EeXTro05VtIadNGnOlIunTRXKtpDTpSueumkhp0ppz0aIadNGnOtvSGnTTNIpSGnTRpzpSGnS9K500Q06UrnopDTro051lIaddGnOlIunTRpypSGnTTa5VtMmnSt05UqQ061mnO9NEK66NOVNENOuuF450vDJp0peudNEK6XpXPRohp10OWgi6efX0qKVtHmrpSudKQrpSudKQrpSudKQrpSudKQrpSov8ASkKvRr6ilIV0pXOlIV0pUUqLV0qKykK6UqKUi1em1zpSFdKVz0aIV0ppz0UhXTRXOlIV0pXOlIV0pXOlIV00VzpSFdNGnOlSFdNGkUqwrpSudKRa6Uc6EK5UrBpGLaVgQaVgQbSsCDaVgQbSsCFbSsCFVSpCFbSsCCqVIQVSsCLW0rAg2lYJBtKwIVtKwIVtKwIVtKwIVVKkIKpUnpEVSp9KRaqlSEKqib0IVgeHjpyB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4eAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAenqwEet9UAj09WAj09WAj09WAj09WAj09WAj09WAn1nqwE+s9WAj09WAj09WAn09UAj09WAj09WAj1vqgEenqwEenqwEenqwE+s9WAj09WAj0WA//Z') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .registration-container {
+            max-width: 480px;
+            margin: 80px auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .registration-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        label {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-control {
+            margin-bottom: 12px;
+            border-radius: 6px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color:rgb(17, 170, 204);
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color:rgb(7, 100, 116);
+        }
+
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color:rgb(217, 16, 120);
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .registration-container {
+                margin: 40px 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="registration-container">
+        <h2>Inscription</h2>
+        
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endif %}
+        
+        <form action="{{ path('inscription_page') }}" method="POST">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username *</label>
+                <input type="text" class="form-control" id="username" required name="username" minlength="3" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" class="form-control" id="email" required name="email" placeholder="Enter your email">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password *</label>
+                <input type="password" class="form-control" id="password" required name="password" minlength="6" placeholder="Enter your password">
+            </div>
+            <div class="mb-3">
+                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" required name="confirm_password" placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+            
+            <div class="login-link">
+                Already have an account? <a href="{{ path('connexion_page') }}">Login here</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

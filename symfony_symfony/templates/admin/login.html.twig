@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<h2>Connexion Admin</h2>
+
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="post">
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Mot de passe" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Connexion</button>
+</form>
+{% endblock %}

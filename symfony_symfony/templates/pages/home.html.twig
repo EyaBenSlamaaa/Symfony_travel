@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        background-size: cover;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .hero {
+        background: url('https://www.n1t1.com/wp-content/uploads/2017/08/SSV_thuyican_6-768x768.jpg') no-repeat center center fixed;
+        background-size: cover;
+        height: 100vh;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
+        padding: 0 5%;
+    }
+
+    .hero-content {
+        max-width: 700px;
+    }
+
+    .hero-content h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        text-align: center;
+        color:black;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .btn.blue {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    .btn.white {
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+    }
+
+    .features {
+        background-color: #f9fafb;
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .features h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .feature-list {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .feature {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        flex: 1 1 250px;
+        max-width: 300px;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        color: #2563eb;
+        margin-bottom: 1rem;
+    }
+
+    .feature h3 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .cta {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: url('https://www.n1t1.com/wp-content/uploads/2017/08/SSV_thuyican_6-768x768.jpg') ;
+    }
+
+    .cta h2 {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .cta p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    footer {
+        background-color: #f3f4f6;
+        padding: 1rem 0;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #374151;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>Discover Incredible Destinations</h1>
+        <p>Easily book your next trip and create unforgettable memories.</p>
+        <div class="buttons">
+            <a href="#" class="btn blue">View Trips</a>
+        </div>
+    </div>
+</div>
+
+<div class="features">
+    <h2>Why Choose Us</h2>
+    <div class="feature-list">
+        <div class="feature">
+            <div class="feature-icon">DT</div>
+            <h3>Competitive Prices</h3>
+            <p>We guarantee the best rates for all your travels.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🛡️</div>
+            <h3>Safe Travel</h3>
+            <p>Your safety is our top priority throughout all your journeys.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast Booking</h3>
+            <p>Book your trip in minutes with our simple system.</p>
+        </div>
+    </div>
+</div>
+
+<div class="cta">
+    <h2>Ready to Start Your Adventure?</h2>
+    <p>Join thousands of satisfied travelers and book your next trip today.</p>
+    <a href="#" class="btn blue">Explore Destinations</a>
+</div>
+
+<footer>
+    © 2025 - Travel Booking Management Application
+</footer>
+{% endblock %}
