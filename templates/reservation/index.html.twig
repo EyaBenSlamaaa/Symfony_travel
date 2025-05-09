@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reservation{% endblock %}
+
+{% block stylesheets %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .reservation-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .reservation-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #343a40;
+    }
+
+    .form-control {
+        font-size: 15px;
+        padding: 10px 15px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 6px;
+    }
+
+    .alert {
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="reservation-container">
+    <h2 class="reservation-title">Reservation Form</h2>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post">
+        <div class="mb-3">
+            <input type="text" name="nom" placeholder="Last Name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="text" name="prenom" placeholder="First Name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="email" name="email" placeholder="Email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="text" name="telephone" placeholder="Phone Number" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="date" name="dateNaissance" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <input type="number" name="age" placeholder="Age" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Reserve Now</button>
+    </form>
+</div>
+{% endblock %}

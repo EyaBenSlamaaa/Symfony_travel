@@ -1,0 +1,32 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th>Age</th>
+            <th>Title</th>
+            <th>Destination</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Duration</th>
+            <th>Departure</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for res in reservations %}
+        <tr>
+            <td>{{ res.nom }}</td>
+            <td>{{ res.prenom }}</td>
+            <td>{{ res.email }}</td>
+            <td>{{ res.telephone }}</td>
+            <td>{{ res.dateNaissance|date('d/m/Y') }}</td>
+            <td>{{ res.age }}</td>
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

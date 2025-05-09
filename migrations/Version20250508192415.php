@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250506230125 extends AbstractMigration
+final class Version20250508192415 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,10 @@ final class Version20250506230125 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            CREATE TABLE `admin` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_880E0D76E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            ALTER TABLE reservation ADD CONSTRAINT FK_42C84955642B8210 FOREIGN KEY (admin_id) REFERENCES admin (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE INDEX IDX_42C84955642B8210 ON reservation (admin_id)
         SQL);
     }
 
@@ -32,10 +32,10 @@ final class Version20250506230125 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            DROP TABLE `admin`
+            ALTER TABLE reservation DROP FOREIGN KEY FK_42C84955642B8210
         SQL);
         $this->addSql(<<<'SQL'
-            DROP TABLE `user`
+            DROP INDEX IDX_42C84955642B8210 ON reservation
         SQL);
     }
 }

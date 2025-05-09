@@ -22,6 +22,9 @@ class User {
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column]
+    private ?string $role = "user";
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,17 @@ class User {
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+    public function setRole(string $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }

@@ -79,6 +79,7 @@ final class AuthController extends AbstractController
                 } else {
                     $this->ConfigNav($req);
                     $req->getSession()->set('user_id', $user->getId());
+                    $req->getSession()->set('user_role', $user->getRole());
                     
                     if ($req->request->get('remember_me')) {
                         $req->getSession()->set('session_lifetime', 'extended');
@@ -94,8 +95,6 @@ final class AuthController extends AbstractController
         ]);
     }
 
-   
-    
     #[Route('/inscription', name: 'inscription_page')]
     public function signup(Request $req): Response{
         if($req->getSession()->get('user_id')){
@@ -127,6 +126,7 @@ final class AuthController extends AbstractController
                 $user->setUsername($username);
                 $user->setEmail($email);
                 $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+                $user->setRole("user");
                 
                 $this->emi->persist($user);
                 $this->emi->flush();
@@ -140,8 +140,6 @@ final class AuthController extends AbstractController
             'error' => $error
         ]);
     }
-
-    
 
     #[Route('/logout', name: 'deconnexion_page')]
     public function logout(Request $req): Response{
