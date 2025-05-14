@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Controller;
+
 use App\Repository\ReservationRepository;
 use App\Entity\Reservation;
 use Doctrine\ORM\EntityManagerInterface;
@@ -7,46 +9,66 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security; 
+use App\Repository\AdminRepository;
+use Symfony\Component\Security\Core\Security;
+
 class ReservationController extends AbstractController
 {
-   #[Route('/reservation', name: 'app_reservation')]
-public function reservation(Request $request, EntityManagerInterface $em, Security $security): Response
-{
-    // Récupérer l'admin connecté avant d'utiliser la variable
-    $admin = $security->getUser(); // doit être une instance de Admin
+   #[Route('/reservation/{admin_id}', name: 'app_reservation')]
+    public function reservation(
+        int $admin_id,
+        Request $request,
+        EntityManagerInterface $em,
+        AdminRepository $adminRepository
+    ): Response {
+        // Récupérer l'admin par ID
+        $admin = $adminRepository->find($admin_id);
 
-    if ($request->isMethod('POST')) {
-        $reservation = new Reservation();
+        if (!$admin) {
+            $this->addFlash('error', 'Administrateur non trouvé.');
+            return $this->redirectToRoute('app_home'); // Rediriger vers une page d'accueil ou autre
+        }
 
-        $reservation->setNom($request->request->get('nom'));
-        $reservation->setPrenom($request->request->get('prenom'));
-        $reservation->setEmail($request->request->get('email'));
-        $reservation->setTelephone($request->request->get('telephone'));
-        $reservation->setDateNaissance(new \DateTime($request->request->get('dateNaissance')));
-        $reservation->setAge($request->request->get('age'));
-        $reservation->setAdmin($admin); // Maintenant $admin est défini
+        if ($request->isMethod('POST')) {
+            $reservation = new Reservation();
 
-        $em->persist($reservation);
-        $em->flush();
+            $reservation->setNom($request->request->get('nom'));
+            $reservation->setPrenom($request->request->get('prenom'));
+            $reservation->setTelephone($request->request->get('telephone'));
 
-        $this->addFlash('success', 'Reservation successful!');
-        return $this->redirectToRoute('my_reservations');
+            try {
+                $dateNaissance = new \DateTime($request->request->get('dateNaissance'));
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Date de naissance invalide.');
+                return $this->redirectToRoute('app_reservation', ['admin_id' => $admin_id]);
+            }
+
+            $now = new \DateTime();
+            $age = $now->diff($dateNaissance)->y;
+
+            $reservation->setDateNaissance($dateNaissance);
+            $reservation->setAge($age);
+            $reservation->setAdmin($admin);
+
+            $em->persist($reservation);
+            $em->flush();
+
+            $this->addFlash('success', 'Réservation enregistrée avec succès.');
+            return $this->redirectToRoute('my_reservations');
+        }
+
+        return $this->render('reservation/index.html.twig', [
+            'admins' => $admin,
+             // Passer l'admin sélectionné au template
+        ]);
     }
-
-    return $this->render('reservation/index.html.twig');
-}
-
-
-
     #[Route('/my-reservations', name: 'my_reservations')]
-public function myReservations(ReservationRepository $repository): Response
-{
-    $reservations = $repository->findAll();
+    public function myReservations(ReservationRepository $repository): Response
+    {
+        $reservations = $repository->findAll();
 
-    return $this->render('reservation/my_reservations.html.twig', [
-        'reservations' => $reservations,
-    ]);
-}
-
+        return $this->render('reservation/my_reservations.html.twig', [
+            'reservations' => $reservations,
+        ]);
+    }
 }

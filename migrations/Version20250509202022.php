@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250508192415 extends AbstractMigration
+final class Version20250509202022 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,10 +21,13 @@ final class Version20250508192415 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE reservation ADD CONSTRAINT FK_42C84955642B8210 FOREIGN KEY (admin_id) REFERENCES admin (id)
+            ALTER TABLE reservation DROP FOREIGN KEY FK_42C84955A76ED395
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_42C84955642B8210 ON reservation (admin_id)
+            DROP INDEX IDX_42C84955A76ED395 ON reservation
+        SQL);
+        $this->addSql(<<<'SQL'
+            ALTER TABLE reservation DROP user_id
         SQL);
     }
 
@@ -32,10 +35,13 @@ final class Version20250508192415 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE reservation DROP FOREIGN KEY FK_42C84955642B8210
+            ALTER TABLE reservation ADD user_id INT NOT NULL
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_42C84955642B8210 ON reservation
+            ALTER TABLE reservation ADD CONSTRAINT FK_42C84955A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE INDEX IDX_42C84955A76ED395 ON reservation (user_id)
         SQL);
     }
 }

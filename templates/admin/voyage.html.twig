@@ -4,8 +4,8 @@
 
 {% block stylesheets %}
 <style>
- body {
-    background-color: #F3F4F6; /* A pleasant light gray, or replace with your choice */
+body {
+    background-color: #F3F4F6;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -16,64 +16,54 @@
     gap: 20px;
     padding: 20px;
 }
-
 .travel-card {
-    width: 400px; /* widened */
+    width: 400px;
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s;
 }
-
 .travel-card:hover {
     transform: scale(1.02);
 }
-
 .card-image img {
     width: 100%;
-    height: 200px; /* adjust the height here if needed */
+    height: 200px;
     object-fit: cover;
 }
-
 .card-body {
     padding: 16px;
     font-family: 'Segoe UI', sans-serif;
-    text-align: left; /* left-aligned */
+    text-align: left;
 }
-
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .card-header h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
 }
-
 .price {
     color: #0056ff;
     font-weight: bold;
 }
-
 .card-body p {
     margin: 8px 0;
     font-size: 14px;
     color: #555;
 }
-
 .card-body i {
     margin-right: 6px;
     color: #666;
 }
-
 .btn-details {
     display: block;
     width: 100%;
-    text-align: center; /* change to 'left' if you want it left-aligned */
+    text-align: center;
     margin-top: 14px;
     background-color: #1a56db;
     color: white;
@@ -83,11 +73,9 @@
     font-weight: bold;
     transition: background-color 0.2s;
 }
-
 .btn-details:hover {
     background-color: #0e3ea0;
 }
-
 </style>
 {% endblock %}
 
@@ -110,7 +98,7 @@
                 <p><i class="fas fa-map-marker-alt"></i> {{ admin.destination }}</p>
                 <p><i class="fas fa-clock"></i> {{ admin.duree }} days</p>
                 <p><i class="fas fa-calendar-alt"></i> {{ admin.dateDepart|date('d/m/Y at H:i') }}</p>
-                <a href="{{ path('app_reservation') }}" class="btn-details">See details</a>
+                <a href="{{ path('app_reservation', {'admin_id': admin.id}) }}" class="btn-details">See details</a>
             </div>
         </div>
     {% else %}
