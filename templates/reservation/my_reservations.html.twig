@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Réservations{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .reservations-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .table th, .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .table th {
+            background-color: #1a56db;
+            color: white;
+        }
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="reservations-container">
+        <h1>Mes Réservations</h1>
+
+        {% for flash_error in app.flashes('error') %}
+            <div class="alert alert-danger">{{ flash_error }}</div>
+        {% endfor %}
+        {% for flash_success in app.flashes('success') %}
+            <div class="alert alert-success">{{ flash_success }}</div>
+        {% endfor %}
+
+        {% if reservations|length > 0 %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Téléphone</th>
+                        <th>Date de Naissance</th>
+                        <th>Âge</th>
+                        <th>Trip</th>
+                        <th>Destination</th>
+                        <th>Prix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td>{{ reservation.nom }}</td>
+                            <td>{{ reservation.prenom }}</td>
+                            <td>{{ reservation.telephone }}</td>
+                            <td>{{ reservation.dateNaissance|date('d/m/Y') }}</td>
+                            <td>{{ reservation.age }}</td>
+                            <td>{{ reservation.admin.titre }}</td>
+                            <td>{{ reservation.admin.destination }}</td>
+                            <td>{{ reservation.admin.prix }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Vous n'avez aucune réservation pour le moment.</p>
+        {% endif %}
+    </div>
+{% endblock %}
