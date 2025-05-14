@@ -3,39 +3,175 @@
 {% block title %}Mes Réservations{% endblock %}
 
 {% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        /* General container styling */
         .reservations-container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 2rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
+
+        /* Enhanced heading styling */
+        .reservations-heading {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .reservations-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #3b82f6, #10b981);
+            border-radius: 2px;
+        }
+        .reservations-heading:hover {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Flash messages */
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+        .alert-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #ef4444;
+        }
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        /* Table styling */
         .table {
             width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
         }
         .table th, .table td {
-            padding: 12px;
+            padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: #374151;
         }
         .table th {
-            background-color: #1a56db;
-            color: white;
+            background: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .table td {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        .table tr:nth-child(even) {
+            background: #f8fafc;
         }
         .table tr:hover {
-            background-color: #f5f5f5;
+            background: #e0f2fe;
+            transition: background 0.2s ease;
         }
-        .alert {
-            margin-bottom: 20px;
+
+        /* Action buttons */
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.2s ease;
+            display: inline-block;
+            text-align: center;
+        }
+        .edit-btn {
+            background: #10b981;
+            color: #ffffff;
+        }
+        .edit-btn:hover {
+            background: #059669;
+        }
+        .delete-btn {
+            background: #ef4444;
+            color: #ffffff;
+        }
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        /* No reservations message */
+        .no-reservations {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #6b7280;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .reservations-container {
+                padding: 1rem;
+            }
+            .reservations-heading {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+            .reservations-heading::after {
+                width: 80px;
+                height: 3px;
+            }
+            .table {
+                display: block;
+                overflow-x: auto;
+            }
+            .table th, .table td {
+                min-width: 120px;
+            }
+            .action-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
         }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="reservations-container">
-        <h1>Mes Réservations</h1>
+        <h1 class="reservations-heading">Mes Réservations</h1>
 
         {% for flash_error in app.flashes('error') %}
             <div class="alert alert-danger">{{ flash_error }}</div>
@@ -48,33 +184,41 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Trip</th>
+                        <th>Destination</th>
+                        <th>Prix</th>
                         <th>Nom</th>
                         <th>Prénom</th>
                         <th>Téléphone</th>
                         <th>Date de Naissance</th>
                         <th>Âge</th>
-                        <th>Trip</th>
-                        <th>Destination</th>
-                        <th>Prix</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for reservation in reservations %}
                         <tr>
+                            <td>{{ reservation.admin.titre }}</td>
+                            <td>{{ reservation.admin.destination }}</td>
+                            <td>{{ reservation.admin.prix }} €</td>
                             <td>{{ reservation.nom }}</td>
                             <td>{{ reservation.prenom }}</td>
                             <td>{{ reservation.telephone }}</td>
                             <td>{{ reservation.dateNaissance|date('d/m/Y') }}</td>
                             <td>{{ reservation.age }}</td>
-                            <td>{{ reservation.admin.titre }}</td>
-                            <td>{{ reservation.admin.destination }}</td>
-                            <td>{{ reservation.admin.prix }} €</td>
+                            <td>
+                                <a href="{{ path('edit_reservation', {'id': reservation.id}) }}" class="action-btn edit-btn">Modifier</a>
+                                <form method="post" action="{{ path('delete_reservation', {'id': reservation.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_reservation_' ~ reservation.id) }}">
+                                    <button type="submit" class="action-btn delete-btn">Supprimer</button>
+                                </form>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         {% else %}
-            <p>Vous n'avez aucune réservation pour le moment.</p>
+            <p class="no-reservations">Vous n'avez aucune réservation pour le moment.</p>
         {% endif %}
     </div>
 {% endblock %}
