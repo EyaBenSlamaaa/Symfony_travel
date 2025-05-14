@@ -33,7 +33,7 @@ class ReservationController extends AbstractController
         $admin = $this->adminRepository->find($admin_id);
         if (!$admin) {
             $this->logger->error('Admin not found', ['admin_id' => $admin_id]);
-            $this->addFlash('error', 'Administrateur non trouvé.');
+            $this->addFlash('error', 'voyage not found');
             return $this->redirectToRoute('app_home');
         }
 
@@ -42,7 +42,7 @@ class ReservationController extends AbstractController
         $this->logger->debug('Checking user ID in session', ['userId' => $userId]);
         if (!$userId) {
             $this->logger->warning('No user ID in session');
-            $this->addFlash('error', 'Vous devez être connecté pour faire une réservation.');
+            $this->addFlash('error', 'You must be logged in to make a reservation.');
             return $this->redirectToRoute('app_login');
         }
 
@@ -51,7 +51,7 @@ class ReservationController extends AbstractController
         if (!$user) {
             $this->logger->error('User not found', ['userId' => $userId]);
             $request->getSession()->remove('user_id');
-            $this->addFlash('error', 'Utilisateur non trouvé.');
+            $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('app_login');
         }
 
@@ -65,7 +65,7 @@ class ReservationController extends AbstractController
                 'userId' => $userId,
                 'adminId' => $admin_id,
             ]);
-            $this->addFlash('error', 'Vous avez déjà une réservation pour ce voyage.');
+            $this->addFlash('error', 'You already have a reservation for this trip');
             return $this->render('reservation/index.html.twig', [
                 'admin' => $admin,
                 'user' => $user,
@@ -96,7 +96,7 @@ class ReservationController extends AbstractController
             // Basic validation
             if (!$formData['nom'] || !$formData['prenom'] || !$formData['telephone'] || !$formData['dateNaissance'] || !$formData['age']) {
                 $this->logger->warning('Missing or empty form fields', $formData);
-                $this->addFlash('error', 'Tous les champs sont obligatoires.');
+                $this->addFlash('error', 'All fields are required');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -117,7 +117,7 @@ class ReservationController extends AbstractController
                     'dateNaissance' => $formData['dateNaissance'],
                     'error' => $e->getMessage(),
                 ]);
-                $this->addFlash('error', 'Format de date de naissance invalide.');
+                $this->addFlash('error', 'Invalid date of birth format');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -129,7 +129,7 @@ class ReservationController extends AbstractController
             $age = (int) $formData['age'];
             if ($age <= 0) {
                 $this->logger->warning('Invalid age', ['age' => $age]);
-                $this->addFlash('error', 'L\'âge doit être supérieur à 0.');
+                $this->addFlash('error', 'Age must be greater than 0');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -158,14 +158,14 @@ class ReservationController extends AbstractController
                 $this->entityManager->persist($reservation);
                 $this->entityManager->flush();
                 $this->logger->info('Reservation saved successfully', ['reservationId' => $reservation->getId()]);
-                $this->addFlash('success', 'Réservation enregistrée avec succès.');
+                $this->addFlash('success', 'Reservation successfully saved');
                 return $this->redirectToRoute('my_reservations');
             } catch (\Exception $e) {
                 $this->logger->error('Failed to save reservation', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
-                $this->addFlash('error', 'Erreur lors de l\'enregistrement: ' . $e->getMessage());
+                $this->addFlash('error', 'Error during registration: ' . $e->getMessage());
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -190,7 +190,7 @@ class ReservationController extends AbstractController
         $this->logger->debug('Checking user ID in myReservations', ['userId' => $userId]);
         if (!$userId) {
             $this->logger->warning('No user ID in session');
-            $this->addFlash('error', 'Vous devez être connecté pour voir vos réservations.');
+            $this->addFlash('error', 'You must be logged in to view your reservations');
             return $this->redirectToRoute('app_login');
         }
 
@@ -199,7 +199,7 @@ class ReservationController extends AbstractController
         if (!$user) {
             $this->logger->error('User not found', ['userId' => $userId]);
             $request->getSession()->remove('user_id');
-            $this->addFlash('error', 'Utilisateur non trouvé.');
+            $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('app_login');
         }
 
@@ -207,9 +207,54 @@ class ReservationController extends AbstractController
         $reservations = $this->entityManager->getRepository(Reservation::class)->findBy(['user' => $user]);
         $this->logger->debug('Fetched reservations', ['count' => count($reservations)]);
 
+        // Initialize recommendedTrips
+        $recommendedTrips = [];
+        $this->logger->debug('Generating trip recommendations', ['userId' => $userId]);
+
+        // Collect admin IDs already reserved
+        $reservedAdminIds = array_map(fn($r) => $r->getAdmin()->getId(), $reservations);
+
+        if (!empty($reservations)) {
+            // Get preferred destinations and price range
+            $destinations = array_unique(array_map(fn($r) => $r->getAdmin()->getDestination(), $reservations));
+            $prices = array_map(fn($r) => $r->getAdmin()->getPrix(), $reservations);
+            $avgPrice = !empty($prices) ? array_sum($prices) / count($prices) : 0;
+            $priceRangeMin = $avgPrice * 0.8;
+            $priceRangeMax = $avgPrice * 1.2;
+
+            // Query for similar trips
+            $qb = $this->adminRepository->createQueryBuilder('a')
+                ->where('a.id NOT IN (:reservedIds)')
+                ->andWhere('a.destination IN (:destinations) OR (a.prix BETWEEN :priceMin AND :priceMax)')
+                ->setParameter('reservedIds', $reservedAdminIds ?: [0]) // Avoid empty IN clause
+                ->setParameter('destinations', $destinations)
+                ->setParameter('priceMin', $priceRangeMin)
+                ->setParameter('priceMax', $priceRangeMax)
+                ->setMaxResults(3);
+            
+            $recommendedTrips = $qb->getQuery()->getResult();
+        } else {
+            // Fallback: Recommend top 3 trips (e.g., by price or random)
+            $qb = $this->adminRepository->createQueryBuilder('a')
+                ->where('a.id NOT IN (:reservedIds)')
+                ->setParameter('reservedIds', $reservedAdminIds ?: [0])
+                ->orderBy('a.prix', 'ASC')
+                ->setMaxResults(3);
+            
+            $recommendedTrips = $qb->getQuery()->getResult();
+        }
+
+        $this->logger->info('Generated recommendations', [
+            'userId' => $userId,
+            'recommendationCount' => count($recommendedTrips),
+            'hasReservations' => !empty($reservations),
+            'reservedIds' => $reservedAdminIds,
+        ]);
+
         return $this->render('reservation/my_reservations.html.twig', [
             'reservations' => $reservations,
             'user' => $user,
+            'recommendedTrips' => $recommendedTrips,
         ]);
     }
 
@@ -223,7 +268,7 @@ class ReservationController extends AbstractController
         $this->logger->debug('Checking user ID in session', ['userId' => $userId]);
         if (!$userId) {
             $this->logger->warning('No user ID in session');
-            $this->addFlash('error', 'Vous devez être connecté pour modifier une réservation.');
+            $this->addFlash('error', 'You must be logged in to modify a reservation');
             return $this->redirectToRoute('app_login');
         }
 
@@ -232,7 +277,7 @@ class ReservationController extends AbstractController
         if (!$user) {
             $this->logger->error('User not found', ['userId' => $userId]);
             $request->getSession()->remove('user_id');
-            $this->addFlash('error', 'Utilisateur non trouvé.');
+            $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('app_login');
         }
 
@@ -240,7 +285,7 @@ class ReservationController extends AbstractController
         $reservation = $this->entityManager->getRepository(Reservation::class)->find($id);
         if (!$reservation || $reservation->getUser()->getId() !== $userId) {
             $this->logger->error('Reservation not found or unauthorized', ['reservation_id' => $id, 'userId' => $userId]);
-            $this->addFlash('error', 'Réservation non trouvée ou accès non autorisé.');
+            $this->addFlash('error', 'Reservation not found or unauthorized access');
             return $this->redirectToRoute('my_reservations');
         }
 
@@ -248,7 +293,7 @@ class ReservationController extends AbstractController
         $admin = $reservation->getAdmin();
         if (!$admin) {
             $this->logger->error('Admin not found for reservation', ['reservation_id' => $id]);
-            $this->addFlash('error', 'Voyage associé non trouvé.');
+            $this->addFlash('error', 'Associated trip not found');
             return $this->redirectToRoute('my_reservations');
         }
 
@@ -279,7 +324,7 @@ class ReservationController extends AbstractController
             // Basic validation
             if (!$formData['nom'] || !$formData['prenom'] || !$formData['telephone'] || !$formData['dateNaissance'] || !$formData['age']) {
                 $this->logger->warning('Missing or empty form fields', $formData);
-                $this->addFlash('error', 'Tous les champs sont obligatoires.');
+                $this->addFlash('error', 'All fields are required');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -302,7 +347,7 @@ class ReservationController extends AbstractController
                     'dateNaissance' => $formData['dateNaissance'],
                     'error' => $e->getMessage(),
                 ]);
-                $this->addFlash('error', 'Format de date de naissance invalide.');
+                $this->addFlash('error', 'Invalid date of birth format');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -316,7 +361,7 @@ class ReservationController extends AbstractController
             $age = (int) $formData['age'];
             if ($age <= 0) {
                 $this->logger->warning('Invalid age', ['age' => $age]);
-                $this->addFlash('error', 'L\'âge doit être supérieur à 0.');
+                $this->addFlash('error', 'Age must be greater than 0');
                 return $this->render('reservation/index.html.twig', [
                     'admin' => $admin,
                     'user' => $user,
@@ -343,7 +388,7 @@ class ReservationController extends AbstractController
             try {
                 $this->entityManager->flush();
                 $this->logger->info('Reservation updated successfully', ['reservationId' => $id]);
-                $this->addFlash('success', 'Réservation modifiée avec succès.');
+                $this->addFlash('success', 'Reservation successfully updated');
                 return $this->redirectToRoute('my_reservations');
             } catch (\Exception $e) {
                 $this->logger->error('Failed to update reservation', [
@@ -381,7 +426,7 @@ class ReservationController extends AbstractController
         $this->logger->debug('Checking user ID in session', ['userId' => $userId]);
         if (!$userId) {
             $this->logger->warning('No user ID in session');
-            $this->addFlash('error', 'Vous devez être connecté pour supprimer une réservation.');
+            $this->addFlash('error', 'You must be logged in to delete a reservation');
             return $this->redirectToRoute('app_login');
         }
 
@@ -390,7 +435,7 @@ class ReservationController extends AbstractController
         if (!$user) {
             $this->logger->error('User not found', ['userId' => $userId]);
             $request->getSession()->remove('user_id');
-            $this->addFlash('error', 'Utilisateur non trouvé.');
+            $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('app_login');
         }
 
@@ -398,7 +443,7 @@ class ReservationController extends AbstractController
         $reservation = $this->entityManager->getRepository(Reservation::class)->find($id);
         if (!$reservation || $reservation->getUser()->getId() !== $userId) {
             $this->logger->error('Reservation not found or unauthorized', ['reservation_id' => $id, 'userId' => $userId]);
-            $this->addFlash('error', 'Réservation non trouvée ou accès non autorisé.');
+            $this->addFlash('error', 'Reservation not found or unauthorized access');
             return $this->redirectToRoute('my_reservations');
         }
 
@@ -406,7 +451,7 @@ class ReservationController extends AbstractController
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete_reservation_' . $id, $token)) {
             $this->logger->warning('Invalid CSRF token', ['reservation_id' => $id]);
-            $this->addFlash('error', 'Jeton de sécurité invalide.');
+            $this->addFlash('error', 'Invalid security token');
             return $this->redirectToRoute('my_reservations');
         }
 
@@ -416,13 +461,13 @@ class ReservationController extends AbstractController
             $this->entityManager->remove($reservation);
             $this->entityManager->flush();
             $this->logger->info('Reservation deleted successfully', ['reservationId' => $id]);
-            $this->addFlash('success', 'Réservation supprimée avec succès.');
+            $this->addFlash('success', 'Reservation successfully deleted');
         } catch (\Exception $e) {
             $this->logger->error('Failed to delete reservation', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            $this->addFlash('error', 'Erreur lors de la suppression: ' . $e->getMessage());
+            $this->addFlash('error', 'Error while deleting ' . $e->getMessage());
         }
 
         return $this->redirectToRoute('my_reservations');

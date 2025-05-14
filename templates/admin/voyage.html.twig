@@ -76,6 +76,22 @@ body {
 .btn-details:hover {
     background-color: #0e3ea0;
 }
+.btn-detailss {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 14px;
+    background-color:rgb(13, 151, 61);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.btn-detailss:hover {
+    background-color:rgb(17, 123, 51);
+}
 </style>
 {% endblock %}
 
@@ -93,12 +109,13 @@ body {
             <div class="card-body">
                 <div class="card-header">
                     <h3>{{ admin.titre }}</h3>
-                    <span class="price">{{ admin.prix }} €</span>
+                    <span class="price">{{ admin.prix }} DT</span>
                 </div>
                 <p><i class="fas fa-map-marker-alt"></i> {{ admin.destination }}</p>
                 <p><i class="fas fa-clock"></i> {{ admin.duree }} days</p>
                 <p><i class="fas fa-calendar-alt"></i> {{ admin.dateDepart|date('d/m/Y at H:i') }}</p>
-                <a href="{{ path('app_reservation', {'admin_id': admin.id}) }}" class="btn-details">See details</a>
+                <a href="{{ path('app_reservation', {'admin_id': admin.id}) }}" class="btn-details">Reserve now</a>
+                <a href="" class="btn-detailss">See details</a>
             </div>
         </div>
     {% else %}

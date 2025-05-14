@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes Réservations{% endblock %}
+{% block title %}My Reservations{% endblock %}
 
 {% block stylesheets %}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -130,6 +130,55 @@
             background: #dc2626;
         }
 
+        /* Recommended trips section */
+        .recommendations-container {
+            margin-top: 2rem;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        .recommendations-heading {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .recommendation-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .recommendation-card:last-child {
+            border-bottom: none;
+        }
+        .recommendation-details {
+            flex-grow: 1;
+        }
+        .recommendation-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1f2937;
+        }
+        .recommendation-info {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .reserve-btn {
+            background: #3b82f6;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+        .reserve-btn:hover {
+            background: #2563eb;
+        }
+
         /* No reservations message */
         .no-reservations {
             text-align: center;
@@ -161,9 +210,14 @@
             .table th, .table td {
                 min-width: 120px;
             }
-            .action-btn {
+            .action-btn, .reserve-btn {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
+            }
+            .recommendation-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
             }
         }
     </style>
@@ -171,7 +225,7 @@
 
 {% block body %}
     <div class="reservations-container">
-        <h1 class="reservations-heading">Mes Réservations</h1>
+        <h1 class="reservations-heading">My Reservations</h1>
 
         {% for flash_error in app.flashes('error') %}
             <div class="alert alert-danger">{{ flash_error }}</div>
@@ -187,11 +241,11 @@
                         <th>Trip</th>
                         <th>Destination</th>
                         <th>Prix</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Téléphone</th>
-                        <th>Date de Naissance</th>
-                        <th>Âge</th>
+                        <th>Name</th>
+                        <th>Last name</th>
+                        <th>phone</th>
+                        <th>Date of Birth</th>
+                        <th>Age</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -207,10 +261,10 @@
                             <td>{{ reservation.dateNaissance|date('d/m/Y') }}</td>
                             <td>{{ reservation.age }}</td>
                             <td>
-                                <a href="{{ path('edit_reservation', {'id': reservation.id}) }}" class="action-btn edit-btn">Modifier</a>
-                                <form method="post" action="{{ path('delete_reservation', {'id': reservation.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                <a href="{{ path('edit_reservation', {'id': reservation.id}) }}" class="action-btn edit-btn">Edit</a>
+                                <form method="post" action="{{ path('delete_reservation', {'id': reservation.id}) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this reservation?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete_reservation_' ~ reservation.id) }}">
-                                    <button type="submit" class="action-btn delete-btn">Supprimer</button>
+                                    <button type="submit" class="action-btn delete-btn">Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -218,7 +272,22 @@
                 </tbody>
             </table>
         {% else %}
-            <p class="no-reservations">Vous n'avez aucune réservation pour le moment.</p>
+            <p class="no-reservations">You have no reservations at the moment</p>
+        {% endif %}
+
+        {% if recommendedTrips|length > 0 %}
+            <div class="recommendations-container">
+                <h2 class="recommendations-heading">Recommended Trips</h2>
+                {% for trip in recommendedTrips %}
+                    <div class="recommendation-card">
+                        <div class="recommendation-details">
+                            <div class="recommendation-title">{{ trip.titre }}</div>
+                            <div class="recommendation-info">Destination: {{ trip.destination }} | Prix: {{ trip.prix }} DT</div>
+                        </div>
+                        <a href="{{ path('app_reservation', {'admin_id': trip.id}) }}" class="reserve-btn">Book now</a>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
     </div>
 {% endblock %}
