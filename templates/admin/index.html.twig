@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Admins{% endblock %}
+{% block title %}List of Admins{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -115,8 +115,8 @@
 {% block body %}
 <div class="admin-container">
     <div class="admin-header">
-        <h1>Administration des voyages</h1>
-        <a href="{{ path('admin_new') }}" class="btn-add"><i class='bx bx-plus-circle'></i>  Ajouter un voyage</a>
+        <h1>Travel Administration</h1>
+        <a href="{{ path('admin_new') }}" class="btn-add"><i class='bx bx-plus-circle'></i>  Add a trip</a>
     </div>
 
     {% for message in app.flashes('success') %}
@@ -125,7 +125,7 @@
 
     {% if admins is empty %}
         <div class="empty-state">
-        Aucun voyage disponible
+       Travel Administration
         </div>
     {% else %}
         <table>

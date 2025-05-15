@@ -3,113 +3,74 @@
 {% block title %}Ajouter un nouveau voyage{% endblock %}
 
 {% block stylesheets %}
-<style>
- body {
-    background-color: #F3F4F6; /* Un gris clair agréable, ou remplace par ce que tu veux */
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-    .form-container {
-        max-width: 500px;
-        margin: 0 auto;
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .form-title {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-    .form-card {
-        display: flex;
-        flex-direction: column;
-    }
-    .form-actions {
-        text-align: center;
-        margin-top: 20px;
-    }
-    .form-label {
-        font-size: 14px;
-        margin-bottom: 8px;
-        font-weight: 600;
-    }
-    .form-control {
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-    .btn1 {
-        padding: 10px 20px;
-        border-radius: 5px;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        cursor: pointer;
-    }
-    .btn:hover {
-        background-color: #0056b3;
-    }
-</style>
+
+<style> body { background-color: #F3F4F6; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } .form-container { max-width: 500px; margin: 0 auto; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } .form-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; text-align: center; } .form-card { display: flex; flex-direction: column; } .form-actions { text-align: center; margin-top: 20px; } .form-label { font-size: 14px; margin-bottom: 8px; font-weight: 600; } .form-control { padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 15px; font-size: 14px; } .btn1 { padding: 10px 20px; border-radius: 5px; color: white; background-color: #007bff; border: none; cursor: pointer; margin: 5px; } .btn1:hover { background-color: #0056b3; } .image-preview { margin-top: 15px; text-align: center; display: none; } .image-preview img { max-width: 100%; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); } .alert { padding: 10px; margin-bottom: 15px; border-radius: 5px; } .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; } .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; } .loading { display: none; text-align: center; margin: 10px 0; } </style>
 {% endblock %}
 
 {% block body %}
-<div class="form-container">
-    <h1 class="form-title">Add a new trip</h1>
-    
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
-    {% endfor %}
 
-    <div class="form-card">
-        <form method="post">
-            <div class="mb-3">
-                <label for="titre" class="form-label">Titre</label>
-                <input type="text" id="titre" name="titre" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="destination" class="form-label">Destination</label>
-                <input type="text" id="destination" name="destination" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="imageUrl" class="form-label">Image URL</label>
-                <input type="url" id="imageUrl" name="imageUrl" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="prix" class="form-label">Prix</label>
-                <input type="number" id="prix" name="prix" class="form-control" step="0.01" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="duree" class="form-label">Duration (in days)</label>
-                <input type="number" id="duree" name="duree" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="dateDepart" class="form-label">Departure date</label>
-                <input type="date" id="dateDepart" name="dateDepart" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn1">Add</button>
-                <button type="button" class="btn1" onclick="window.location.href='{{ path('admin_list') }}'">Cancel</button>
-
-            </div>
-        </form>
+<div class="form-container"> <h1 class="form-title">Add a new trip</h1>
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ message }}
     </div>
+{% endfor %}
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div class="form-card">
+    <form method="post">
+        <div class="mb-3">
+            <label for="titre" class="form-label">Titre</label>
+            <input type="text" id="titre" name="titre" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="destination" class="form-label">Destination</label>
+            <input type="text" id="destination" name="destination" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="imageUrl" class="form-label">Description pour l'image AI</label>
+            <textarea id="imageUrl" name="imageUrl" class="form-control" rows="3"></textarea>
+            <button type="button" id="generateBtn" class="btn1">Generate Image</button>
+            <div class="loading" id="loadingIndicator">Génération en cours...</div>
+            <div class="image-preview" id="imagePreview">
+                <img id="generatedImage" src="" alt="Generated image">
+            </div>
+            <input type="hidden" id="imageUrlHidden" name="imageUrl">
+        </div>
+        
+        <div class="mb-3">
+            <label for="prix" class="form-label">Prix</label>
+            <input type="number" id="prix" name="prix" class="form-control" step="0.01" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="duree" class="form-label">Duration (in days)</label>
+            <input type="number" id="duree" name="duree" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="dateDepart" class="form-label">Departure date</label>
+            <input type="date" id="dateDepart" name="dateDepart" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn1">Add</button>
+            <button type="button" class="btn1" onclick="window.location.href='{{ path('admin_list') }}'">Cancel</button>
+        </div>
+    </form>
 </div>
+</div> <script> document.addEventListener('DOMContentLoaded', function() { const generateBtn = document.getElementById('generateBtn'); const imageUrlTextarea = document.getElementById('imageUrl'); const imagePreview = document.getElementById('imagePreview'); const generatedImage = document.getElementById('generatedImage'); const imageUrlHidden = document.getElementById('imageUrlHidden'); const loadingIndicator = document.getElementById('loadingIndicator'); generateBtn.addEventListener('click', function() { const description = imageUrlTextarea.value.trim(); if (!description) { alert('Veuillez entrer une description pour l\'image'); return; } // Show loading indicator loadingIndicator.style.display = 'block'; // Prepare form data const formData = new FormData(); formData.append('description', description); // Send request to the backend fetch('{{ path('generate_image') }}', { method: 'POST', body: formData }) .then(response => response.json()) .then(data => { loadingIndicator.style.display = 'none'; if (data.success) { // Show the image generatedImage.src = data.imageUrl; imagePreview.style.display = 'block'; // Store the URL in the hidden input for form submission imageUrlHidden.value = data.imageUrl; } else { alert('Erreur: ' + data.message); } }) .catch(error => { loadingIndicator.style.display = 'none'; alert('Erreur lors de la génération de l\'image: ' + error); }); }); }); </script>
 {% endblock %}
+
