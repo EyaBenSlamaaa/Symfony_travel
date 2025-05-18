@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trip Details{% endblock %}
+
+{% block stylesheets %}
+<style>
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.container-detail {
+   width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out;
+}
+.image-detail {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+.detail-body {
+    padding: 24px;
+}
+.detail-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+}
+.detail-meta {
+    color: #555;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+.detail-description {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-details {
+    display: block; /* Changed to block for margin: 0 auto to work */
+    background-color: #007bff;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px 500px; /* Increased horizontal padding to make the button longer */
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 30px auto 0; /* Centers the button and keeps top margin */
+}
+
+.btn-details:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 480px) {
+    .btn-details {
+        font-size: 16px;
+        padding: 10px 300px; /* Adjusted for smaller screens */
+        margin-top: 20px; /* Slightly reduced margin for mobile */
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container-detail">
+    {% if admin.imageUrl %}
+        <img src="{{ asset(admin.imageUrl) }}" alt="Trip Image" class="image-detail">
+    {% else %}
+        <img src="https://via.placeholder.com/900x350?text=No+Image" alt="No image" class="image-detail">
+    {% endif %}
+    <div class="detail-body">
+        <div class="detail-title">{{ admin.titre }}</div>
+        <div class="detail-meta"><i class="fas fa-map-marker-alt"></i> Destination: {{ admin.destination }}</div>
+        <div class="detail-meta"><i class="fas fa-calendar-alt"></i> Departure Date: {{ admin.dateDepart|date('d/m/Y H:i') }}</div>
+        <div class="detail-meta"><i class="fas fa-clock"></i> Duration: {{ admin.duree }} days</div>
+         <div class="detail-meta"><i class="fas fa-money-bill-wave"></i> Price: {{ admin.prix }} DT</div>
+                 <div class="detail-meta"><i class="fas fa-info-circle"></i> Description: </div>
+        <div class="detail-description">{{ admin.description }}</div>
+          <div><a href="{{ path('app_reservation', {'admin_id': admin.id}) }}" class="btn-details">Reserve now</a></div>
+    </div>
+</div>
+{% endblock %}

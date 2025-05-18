@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* General container styling */
         .reservations-container {
@@ -19,7 +20,7 @@
         .reservations-heading {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #3b82f6, #10b981);
+            background: linear-gradient(to right,rgb(0, 0, 0),rgb(0, 0, 0));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
@@ -37,7 +38,7 @@
             transform: translateX(-50%);
             width: 100px;
             height: 4px;
-            background: linear-gradient(to right, #3b82f6, #10b981);
+            background: linear-gradient(to right, #3b82f6,rgb(5, 41, 57));
             border-radius: 2px;
         }
         .reservations-heading:hover {
@@ -85,8 +86,8 @@
             color: #374151;
         }
         .table th {
-            background: #3b82f6;
-            color: #ffffff;
+            background:rgb(235, 237, 240);
+            color:rgb(0, 0, 0);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -107,12 +108,16 @@
 
         /* Action buttons */
         .action-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
             border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 500;
             transition: background 0.2s ease;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
             text-align: center;
         }
         .edit-btn {
@@ -211,7 +216,9 @@
                 min-width: 120px;
             }
             .action-btn, .reserve-btn {
-                padding: 0.4rem 0.8rem;
+                padding: 0.4rem;
+                width: 1.8rem;
+                height: 1.8rem;
                 font-size: 0.8rem;
             }
             .recommendation-card {
@@ -254,17 +261,17 @@
                         <tr>
                             <td>{{ reservation.admin.titre }}</td>
                             <td>{{ reservation.admin.destination }}</td>
-                            <td>{{ reservation.admin.prix }} €</td>
+                            <td>{{ reservation.admin.prix }} DT</td>
                             <td>{{ reservation.nom }}</td>
                             <td>{{ reservation.prenom }}</td>
                             <td>{{ reservation.telephone }}</td>
                             <td>{{ reservation.dateNaissance|date('d/m/Y') }}</td>
                             <td>{{ reservation.age }}</td>
                             <td>
-                                <a href="{{ path('edit_reservation', {'id': reservation.id}) }}" class="action-btn edit-btn">Edit</a>
+                                <a href="{{ path('edit_reservation', {'id': reservation.id}) }}" class="action-btn edit-btn"><i class="fas fa-edit"></i></a>
                                 <form method="post" action="{{ path('delete_reservation', {'id': reservation.id}) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this reservation?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete_reservation_' ~ reservation.id) }}">
-                                    <button type="submit" class="action-btn delete-btn">Delete</button>
+                                    <button type="submit" class="action-btn delete-btn"><i class="fas fa-trash-alt"></i></button>
                                 </form>
                             </td>
                         </tr>
