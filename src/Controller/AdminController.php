@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Persistence\ManagerRegistry;
 
 class AdminController extends AbstractController
 {
@@ -217,6 +218,20 @@ public function voyage(Request $req): Response
 
     return $this->render('admin/voyage.html.twig', [
         'admins' => $admins,
+    ]);
+}
+
+#[Route('/admin/{id}', name: 'trip_detail')]
+public function show(ManagerRegistry $doctrine, int $id): Response
+{
+    $admin = $doctrine->getRepository(Admin::class)->find($id);
+
+    if (!$admin) {
+        throw $this->createNotFoundException('Trip not found.');
+    }
+
+    return $this->render('admin/show_trip.html.twig', [
+        'admin' => $admin
     ]);
 }
 

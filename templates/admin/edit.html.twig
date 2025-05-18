@@ -50,9 +50,30 @@
     background-color: #007bff;
     border: none;
     cursor: pointer;
+    margin: 5px;
 }
-.btn:hover {
+.btn1:hover {
     background-color: #0056b3;
+}
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.loading {
+    display: none;
+    text-align: center;
+    margin: 10px 0;
 }
 </style>
 {% endblock %}
@@ -66,7 +87,7 @@
             {{ message }}
         </div>
     {% endfor %}
-    
+
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -87,7 +108,7 @@
 
             <div class="mb-3">
                 <label for="imageUrl" class="form-label">URL de l'image</label>
-                <input type="url" id="imageUrl" name="imageUrl" class="form-control" value="{{ voyage.imageUrl }}" required>
+                <input type="text" id="imageUrl" name="imageUrl" class="form-control" value="{{ voyage.imageUrl }}" required>
             </div>
 
             <div class="mb-3">
@@ -108,6 +129,10 @@
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea id="description" name="description" class="form-control" rows="4" required>{{ voyage.description }}</textarea>
+                <div class="spinner-border" role="status" id="loadingIndicator" style="display: none; margin: 15px auto 15px auto">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <button type="button" class="btn1" id="generate_description">Générer la description avec l'IA</button>
             </div>
 
             <div class="form-actions">
@@ -117,4 +142,45 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const generateBtn = document.getElementById('generate_description');
+        const descriptionInput = document.getElementById('description');
+        generateBtn.addEventListener('click', async () => {
+            const titre = document.getElementById('titre').value;
+            const destination = document.getElementById('destination').value;
+            if (!titre || !destination) {
+                alert('Veuillez remplir le titre et la destination.');
+                return;
+            }
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+            try {
+                descriptionInput.style.display = 'none';
+                const response = await fetch('/generateDescription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: `Génère une description de voyage pour un séjour à ${destination} avec le titre "${titre}".`
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur de réponse du réseau');
+                }
+                const data = await response.json();
+                descriptionInput.value = data.response;
+            } catch (error) {
+                console.error('Erreur:', error);
+            } finally {
+                descriptionInput.style.display = 'block';
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    });
+</script>
 {% endblock %}
